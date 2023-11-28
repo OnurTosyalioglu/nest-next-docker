@@ -1,0 +1,50 @@
+image: node:16-alpine3.16
+
+stages: 
+  - build
+  - deploy
+
+build:
+  stage: build
+  script: 
+    - yarn 
+    - yarn build
+  cache:
+    untracked: true
+    paths:
+      - node_modules/
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - ./
+    exclude:
+      - node_modules/
+      - .git
+      - .git/**/*
+  #artifacts:
+  #  paths:
+  #    - node_modules/
+  #  expire_in: 1 week    
+
+deploy:
+  image: alpine
+  stage: deploy
+  before_script:
+    - apk update
+    - apk add openssh git curl rsync
+  script:
+    - apk add --no-cache rsync openssh
+    - mkdir -p ~/.ssh
+    - echo "$REMOTE_SSH_KEY" >> ~/.ssh/id_dsa
+    - chmod 600 ~/.ssh/id_dsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    ###########
+    - ssh -p22 "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_FOLDER; sudo -S <<< $REMOTE_PASSWORD rm -rf .next/"
+    - rsync -ravzP --exclude="node_modules" --delete ./ "$REMOTE_USER@$REMOTE_SERVER:$REMOTE_FOLDER"
+    - ssh -p22 "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_FOLDER; yarn install --network-timeout 1000000"
+    # yarn build
+    # - ssh -p22 "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_FOLDER; yarn build"
+    # - pm2 restart cloud
+    - ssh -p22 "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_FOLDER; sudo -S <<< $REMOTE_PASSWORD pm2 restart cloud"
+    - ssh -p22 "$REMOTE_USER@$REMOTE_SERVER" "cd $REMOTE_FOLDER; sudo -S <<< $REMOTE_PASSWORD service nginx reload"
+
