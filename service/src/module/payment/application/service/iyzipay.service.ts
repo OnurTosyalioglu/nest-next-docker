@@ -1,5 +1,5 @@
 import {Injectable} from "@nestjs/common";
-import * as Iyzipay from 'iyzipay'
+import Iyzipay from 'iyzipay'
 import { config } from '../../../../config/iyzipay.config'
 
 @Injectable()
