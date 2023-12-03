@@ -7,4 +7,10 @@ dotenv.config({
 
 export const config = {
   route: process.env.BULL_BOARD_ROUTE || 'queues',
+	config: {
+		redis: {
+  	  host: process.env.REDIS_HOST,
+  	  port: parseInt(process.env.REDIS_PORT),
+  	},
+	}
 };

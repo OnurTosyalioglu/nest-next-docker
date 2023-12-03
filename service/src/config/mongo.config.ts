@@ -9,7 +9,7 @@ export const config = {
   uri: `${process.env.MONGODB_URI}`,
   host: `${process.env.MONGODB_HOST}`,
   port: `${process.env.MONGODB_PORT}`,
-  name: `${process.env.MONGODB_NAME}`,
+  database: `${process.env.MONGODB_DATABASE}`,
   user: `${process.env.MONGODB_USER}`,
   pass: `${process.env.MONGODB_PASS}`,
 };

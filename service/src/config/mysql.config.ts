@@ -6,10 +6,10 @@ dotenv.config({
 });
 
 export const config = {
-	uri: process.env.MYSQL_URI,
-	name: process.env.MYSQL_NAME,
-  host: process.env.MYSQL_HOST,
-  port: process.env.MYSQL_PORT,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
+	// uri: process.env.MYSQL_URI,
+	database: process.env.MYSQL_database || 'nest',
+  host: process.env.MYSQL_HOST || 'localhost',
+  port: parseInt(process.env.MYSQL_PORT) || 3306,
+  user: process.env.MYSQL_USER || 'nest',
+  password: process.env.MYSQL_PASSWORD || 'password',
 };
